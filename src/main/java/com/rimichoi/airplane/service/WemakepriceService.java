@@ -22,7 +22,7 @@ public class WemakepriceService extends SearchPriceService<AppProperties.Wemakep
 
     @Override
     public long getLowestPrice() {
-        long price = 0;
+        long price = Integer.MAX_VALUE;
 
         try {
             String searchId = generateSearchId();
@@ -56,19 +56,11 @@ public class WemakepriceService extends SearchPriceService<AppProperties.Wemakep
             return loadPriceObject(searchId, price);
         }
 
-        if (price == 0) {
-            price = minPrice;
-        }
-
-        if (price > minPrice) {
-            price = minPrice;
-        }
-
         if (!jsonObject.getBoolean("complete")) {
             return loadPriceObject(searchId, price);
         }
 
-        return price;
+        return Math.min(price, minPrice);
     }
 
     private String generateSearchId() throws ExecutionException, InterruptedException, TimeoutException {
